@@ -342,6 +342,18 @@ body {
   border: 1px solid #f0c040;
 }
 
+.score-item.current-player {
+  background: #1c3048;
+  border: 2px solid #388bfd;
+  box-shadow: 0 0 8px rgba(56, 139, 253, 0.3);
+}
+
+.score-item.rank-1.current-player {
+  background: #3d3410;
+  border: 2px solid #f0c040;
+  box-shadow: 0 0 8px rgba(240, 192, 64, 0.3);
+}
+
 .player-name {
   font-weight: bold;
 }

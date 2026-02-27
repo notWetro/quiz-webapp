@@ -1,0 +1,40 @@
+name: Deploy to NAS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to NAS
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.NAS_HOST }}
+          username: ${{ secrets.NAS_USERNAME }}
+          key: ${{ secrets.NAS_SSH_KEY }}
+          port: ${{ secrets.NAS_PORT || 22 }}
+          script: |
+            # Wechsel ins Projektverzeichnis
+            cd ${{ secrets.NAS_PROJECT_PATH || '/volume1/docker/quiz-webapp' }}
+            
+            # Pull neuesten Code
+            git pull origin main
+            
+            # Stoppe den alten Container
+            docker-compose down || docker stop quiz-webapp || true
+            
+            # Baue neues Image
+            docker-compose build --no-cache || docker build -t quiz-webapp .
+            
+            # Starte Container neu
+            docker-compose up -d || docker run -d --name quiz-webapp -p 3000:80 quiz-webapp
+            
+            # Räume alte Images auf
+            docker image prune -f

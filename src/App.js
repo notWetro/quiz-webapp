@@ -13,6 +13,7 @@ function App() {
   const [players, setPlayers] = useState([]);
   const [categories, setCategories] = useState([]);
   const [activeQuestion, setActiveQuestion] = useState(null);
+  const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
 
   const handlePlayersReady = (playerList) => {
     setPlayers(playerList);
@@ -56,6 +57,7 @@ function App() {
     );
     markAnswered(category, points);
     setActiveQuestion(null);
+    setCurrentPlayerIndex((prev) => (prev + 1) % players.length);
   };
 
   const handleWrong = (playerName) => {
@@ -72,6 +74,7 @@ function App() {
 
   const handleClose = () => {
     setActiveQuestion(null);
+    setCurrentPlayerIndex((prev) => (prev + 1) % players.length);
   };
 
   const resetGame = () => {
@@ -79,6 +82,7 @@ function App() {
     setPlayers([]);
     setCategories([]);
     setActiveQuestion(null);
+    setCurrentPlayerIndex(0);
   };
 
   const isGameOver =
@@ -130,7 +134,7 @@ function App() {
                 )}
               </div>
               <div className="side-area">
-                <ScoreBoard players={players} />
+                <ScoreBoard players={players} currentPlayerIndex={currentPlayerIndex} />
                 <button className="upload-new-btn" onClick={() => setStep('upload')}>
                   📂 Load New Quiz
                 </button>
